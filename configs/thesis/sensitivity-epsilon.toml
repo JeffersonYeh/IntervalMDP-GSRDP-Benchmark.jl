@@ -1,0 +1,146 @@
+# Sensitivity of BRTDP (brtdp.toml: state temperature T = 1, action epsilon = 0.02) to the action
+# epsilon: epsilon in {0.002, 0.006, 0.06, 0.2, 0.4, 0.7} at T = 1. On the 25 problems of
+# brtdp.toml (other than coin4_K8 and coin2_K64) with more than one action; on the other 11,
+# epsilon has no effect and the figure uses the brtdp.toml runs.
+name = "thesis_sensitivity_epsilon"
+
+[benchmark]
+samples   = 5
+warmup    = false     # the first seed's wall-clock includes compilation; the figures leave it out
+seeds     = [20260922, 8675309, 424242, 31415926, 27182818]
+timeout_s = 7200.0   # per solve; 0 = none. A timed-out solve keeps its partial trace
+
+[output]
+results_root    = "results"       # relative to the repository root (run.jl)
+save_raw        = true
+save_trace      = true
+track_initial   = true
+traces          = []
+trace_thin_rtol = 1e-3
+gap_videos      = false
+reference_label = "gsrdp_exhaustive_state_driveboth"
+analysis        = false
+image_formats   = "png"
+
+[property]
+convergence_eps     = 1e-5
+restrict_to_initial = true
+
+[problems]
+root  = "problems"        # relative to the repository root (run.jl)
+names = [
+    "storm_tiny03", "storm_tiny04_noec", "robot_delta0.1", "car_parking_S10_I3", "coin2_K2",
+    "van_der_pol_S20_I5", "package_delivery_S12_I3", "robot_2d_S12_I5", "coin2_K4", "room_temp_3d_S8_I6",
+    "bas_4d_S5x5x7x7_I4", "car_parking_S20_I3", "package_delivery_S24_I5", "patrol_robot_S20_I5",
+    "van_der_pol_S40_I10", "multiObj_robotIMDP", "package_delivery_S50_I5", "impact_robot_2d_ra_S20_I11",
+    "robot_2d_S30_I15", "patrol_robot_S40_I5", "coin4_K2", "coin2_K16", "pimdp_0", "pimdp_1",
+    "coin4_K4",
+]
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e0002"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.002
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e0006"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.006
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e006"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.06
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e02"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.2
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e04"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.4
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_T1_e07"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.7
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"

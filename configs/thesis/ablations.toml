@@ -1,0 +1,102 @@
+# The three ablations of BRTDP (brtdp.toml), each changing one setting:
+#   brtdp_rw6_jacobi_s0max_driveboth        gauss_seidel = false: each rollout is relaxed in one
+#                                           synchronous (Jacobi) iteration instead of k = 1 batches
+#   brtdp_rw6_k1_s0max_driveboth_noreverse  reverse = false: rollouts backed up initial-state end
+#                                           first instead of goal end first
+#   brtdp_rw6_k1_s0max_driveboth_tbupper    transition_bound = "upper": the concrete transition of
+#                                           the sampling minimises the upper instead of the lower bound
+#
+# On the problems of brtdp.toml except coin2_K64 (37): BRTDP does not converge on it, so it drops
+# out of every ablation figure.
+name = "thesis_ablations"
+
+[benchmark]
+samples   = 5
+warmup    = false     # the first seed's wall-clock includes compilation; the figures leave it out
+seeds     = [20260922, 8675309, 424242, 31415926, 27182818]
+timeout_s = 86400.0  # per solve; 0 = none. A timed-out solve keeps its partial trace
+
+[output]
+results_root    = "results"       # relative to the repository root (run.jl)
+save_raw        = true
+save_trace      = true
+track_initial   = true
+traces          = []
+trace_thin_rtol = 1e-3
+gap_videos      = false
+reference_label = "gsrdp_exhaustive_state_driveboth"
+analysis        = false
+image_formats   = "png"
+
+[property]
+convergence_eps     = 1e-5
+restrict_to_initial = true
+
+[problems]
+root  = "problems"        # relative to the repository root (run.jl)
+names = [
+    "storm_tiny01", "storm_tiny02", "storm_tiny03", "storm_tiny05", "storm_tiny_bounded",
+    "storm_tiny04_noec", "robot_delta0.1", "crowds_quotient_3_5", "brp_16_2", "linear_stochastically_switched_S10",
+    "car_parking_S10_I3", "linear_stochastically_switched_S20", "coin2_K2", "van_der_pol_S20_I5",
+    "package_delivery_S12_I3", "robot_2d_S12_I5", "coin2_K4", "room_temp_3d_S8_I6", "bas_4d_S5x5x7x7_I4",
+    "linear_stochastically_switched_S40", "car_parking_S20_I3", "package_delivery_S24_I5",
+    "patrol_robot_S20_I5", "van_der_pol_S40_I10", "multiObj_robotIMDP", "package_delivery_S50_I5",
+    "impact_robot_2d_ra_S20_I11", "robot_2d_S30_I15", "patrol_robot_S40_I5", "almost_identity_n3_S8",
+    "almost_identity_n3_S16", "coin4_K2", "coin2_K16", "pimdp_0", "pimdp_1", "coin4_K4",
+    "coin4_K8",
+]
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_jacobi_s0max_driveboth"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.02
+gauss_seidel = false
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_noreverse"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.02
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
+reverse = false
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth_tbupper"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.02
+k = 1
+transition_bound = "upper"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"

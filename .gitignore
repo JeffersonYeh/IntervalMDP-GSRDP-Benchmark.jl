@@ -1,0 +1,7 @@
+# generated problem files (see problems/README.md)
+problems/*/
+# solver runs and model metrics
+results/
+# figures and their caches
+report-plots/output/
+report-plots/cache/

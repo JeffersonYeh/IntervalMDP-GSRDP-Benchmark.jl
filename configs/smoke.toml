@@ -1,0 +1,65 @@
+# Quick check of the setup: RIVI, asynchronous RIVI and BRTDP on three small problems, one seed.
+# Generate the problems first (problems/README.md: tools/storm/convert_storm.sh and
+# tools/prism/convert_prism.sh).
+name = "smoke"
+
+[benchmark]
+samples   = 1
+warmup    = false     # the first seed's wall-clock includes compilation; the figures leave it out
+seeds     = [20260922]
+timeout_s = 600.0   # per solve; 0 = none. A timed-out solve keeps its partial trace
+
+[output]
+results_root    = "results"       # relative to the repository root (run.jl)
+save_raw        = true
+save_trace      = true
+track_initial   = true
+traces          = []
+trace_thin_rtol = 1e-3
+gap_videos      = false
+reference_label = "gsrdp_exhaustive_state_driveboth"
+analysis        = false
+image_formats   = "png"
+
+[property]
+convergence_eps     = 1e-5
+restrict_to_initial = true
+
+[problems]
+root  = "problems"        # relative to the repository root (run.jl)
+names = [
+    "storm_tiny01", "robot_delta0.1", "coin2_K2",
+]
+
+[[algorithms]]
+name  = "gsrdp"
+label = "gsrdp_exhaustive_state_driveboth"
+[algorithms.params]
+sampling = "exhaustive_state"
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "gsrdp_round_robin_k1_driveboth"
+[algorithms.params]
+sampling = "round_robin"
+k = 1
+drive = "both"
+
+[[algorithms]]
+name  = "gsrdp"
+label = "brtdp_rw6_k1_s0max_driveboth"
+[algorithms.params]
+sampling = "trajectory_brtdp"
+action_epsilon = 0.02
+k = 1
+transition_bound = "lower"
+state_temperature = 1.0
+state_alpha_e = 1.0
+state_exclude_converged = true
+state_converged_eps = 1e-06
+dedup = true
+dedup_scope = "rollout"
+terminate = ["max_steps"]
+initial_state = "max"
+drive = "both"
